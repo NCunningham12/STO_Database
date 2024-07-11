@@ -27,17 +27,17 @@ def input_trucks():
 
 def calculate_bob():
 
-  fetch_query = ("SELECT ROUND(auction_price, 2), province, ROUND(book_cad, 2) FROM inventory") 
-
-  mycursor.execute(fetch_query)
-
   exchange = input("Current exchange rate:\n")
 
-  for row in mycursor:
+  mycursor.execute("SELECT id, auction_price, province, book_cad FROM inventory")
+  trucks = mycursor.fetchall()
+
+  for row in trucks:
     
-    auction_price = int(row[0])
-    province = str(row[1])
-    book_cad = int(row[2])
+    id = int(row[0])
+    auction_price = float(row[1])
+    province = str(row[2])
+    book_cad = float(row[3])
     book_usd = round(float(book_cad) * float(exchange), 2)
 
     if province.lower() == 'alb' or province.lower() == 'bc':
@@ -46,17 +46,11 @@ def calculate_bob():
       canadian_price = round(auction_price, 2)
 
       us_price = round(float(canadian_price) * float(exchange), 2)
-      us_price += 2300
-      us_price *= 1.01
-      total_us = round(us_price, 2)
+      updated_us_price = us_price + 2300
+      updated_us_price *= 1.01
+      total_us = round(updated_us_price, 2)
 
       bob = round(float(book_usd) - float(total_us), 2)
-
-      calculated_values = (book_usd, canadian_price, us_price, total_us, bob)
-
-      input_query2 = ("UPDATE inventory SET book_usd = %s, canadian_price = %s, us_price = %s, total_us = %s, bob = %s")
-
-      mycursor.execute(input_query2, calculated_values)
 
     elif province.lower() == 'ont':
       auction_price += 1000
@@ -64,19 +58,19 @@ def calculate_bob():
       canadian_price = round(auction_price, 2)
 
       us_price = round(float(canadian_price) * float(exchange), 2)
-      us_price += 3400
-      us_price *= 1.01
-      total_us = round(us_price, 2)
+      updated_us_price = us_price + 3400
+      updated_us_price *= 1.01
+      total_us = round(updated_us_price, 2)
 
       bob = round(float(book_usd) - float(total_us), 2)
 
-      calculated_values = (book_usd, canadian_price, us_price, total_us, bob)
+    calculated_values = (book_usd, canadian_price, us_price, total_us, bob, id)
 
-      input_query2 = ("UPDATE inventory SET book_usd = %s, canadian_price = %s, us_price = %s, total_us = %s, bob = %s")
+    print(calculated_values)
 
-      mycursor.execute(input_query2, calculated_values)
-    
-    
+    input_query2 = ("UPDATE inventory SET book_usd = %s, canadian_price = %s, us_price = %s, total_us = %s, bob = %s WHERE id = %s")
+
+    mycursor.execute(input_query2, calculated_values)
 
   db.commit()
 
@@ -90,6 +84,7 @@ fill_values = input("Would you like to fill out the DB values?\n")
 
 if fill_values.lower().startswith("y"):
   calculate_bob()
+
 
 mycursor.close()
 db.close()
