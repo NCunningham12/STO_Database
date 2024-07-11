@@ -10,14 +10,18 @@ db = mysql.connector.connect(
   host=os.getenv("HOST"),
   database=os.getenv("DATABASE")
 )
-cursor = db.cursor()
+mycursor = db.cursor()
 
-query = ("SELECT first, last, username FROM users")
+input_id = int(input("id?\n")) - 1
 
-cursor.execute(query)
+query1 = ("SELECT ROUND(auction_price, 2), province, ROUND(book, 2) FROM inventory") 
 
-for x in cursor:
-  print(x)
+mycursor.execute(query1)
+input_columns = mycursor.fetchall()[input_id]
 
-cursor.close()
+auction_price = (input_columns[0])
+province = (input_columns[1])
+book = (input_columns[2])
+
+# mycursor.close()
 db.close()
