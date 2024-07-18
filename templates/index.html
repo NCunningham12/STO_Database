@@ -1,0 +1,73 @@
+<head>
+  <style>
+    h1 {
+      color: green;
+      text-align: center;
+    }
+
+    table {
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 18px;
+    }
+
+    td,
+    th {
+      border: 1px solid #000;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #c0c0c0;
+    }
+
+    button {
+      background-color: green;
+      width: 250px;
+      color: white;
+      font-size: 20px;
+      padding: 15px;
+      text-align: center;
+      margin: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  </style>
+</head>
+<h1>SoCal Trucks Only LLC Inventory Database</h1>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Created At</th>
+      <th>Auction Price</th>
+      <th>Province</th>
+      <th>Book (CAD)</th>
+      <th>Book (USD)</th>
+      <th>Canadian Price</th>
+      <th>US Price</th>
+      <th>Total US</th>
+      <th>BOB</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for col in records %}
+    <tr>
+      <td>{{col[0]}}</td>
+      <td>{{col[1]}}</td>
+      <td>{{col[2]}}</td>
+      <td>{{col[3]}}</td>
+      <td>{{col[4]}}</td>
+      <td>{{col[5]}}</td>
+      <td>{{col[6]}}</td>
+      <td>{{col[7]}}</td>
+      <td>{{col[8]}}</td>
+      <td>{{col[9]}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<button type="button" onclick="">Add Vehicle</button>
