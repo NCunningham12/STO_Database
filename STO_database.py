@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_bootstrap import Bootstrap5
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -11,22 +12,63 @@ db = mysql.connector.connect(
   host=os.getenv("HOST"),
   database=os.getenv("DATABASE")
 )
-mycursor = db.cursor(buffered=True)
-
-# Flask Component
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY")
+
+bootstrap = Bootstrap5(app)
+
+
 
 @app.route("/")
-def index():
+def Index():
+  cursor = db.cursor(buffered=True)
   select_query = "SELECT * FROM inventory"
-  mycursor.execute(select_query)
-  records = mycursor.fetchall()
+  cursor.execute(select_query)
+  records = cursor.fetchall()
+  cursor.close()
+
   return render_template("index.html", records=records)
 
-@app.route("/add")
-def add_vehicles():
-  return "Adding vehicles to the database"
+
+
+@app.route("/insert", methods = ['POST'])
+def insert():
+  if request.method == 'POST':
+    flash("Vehicle Data Inserted Successfully")
+    auction_price = request.form['Auction Price']
+    province = request.form['Province']
+    book_cad = request.form['Canadian Book']
+    cursor = db.cursor(buffered=True)
+    cursor.execute("INSERT INTO inventory (auction_price, province, book_cad) VALUES (%s, %s, %s)", (auction_price, province, book_cad))
+    db.commit()
+
+    return redirect(url_for('Index'))
+  
+
+@app.route('/delete/<string:id_data>', methods = ['GET'])
+def delete(id_data):
+  flash("Vehicle Record Has Been Successfully Deleted")
+  cursor = db.cursor(buffered=True)
+  cursor.execute("DELETE FROM inventory WHERE id=%s", (id_data,))
+  db.commit()
+  return redirect(url_for('Index'))
+
+
+@app.route('/update', methods=['POST', 'GET'])
+def update():
+  if request.method == 'POST':
+    id_data = request.form['id']
+    auction_price = request.form['Auction Price']
+    province = request.form['Province']
+    book_cad = request.form['Canadian Book']
+    cursor = db.cursor(buffered=True)
+    cursor.execute("""UPDATE inventory SET auction_price=%s, province=%s, book_cad=%s WHERE id=%s""", (auction_price, province, book_cad, id_data))
+    flash("Vehicle Data Updated Successfully")
+    db.commit()
+    return redirect(url_for('Index'))
+  
+
 
 if __name__ == "__main__":
   app.run(debug = True)
@@ -106,5 +148,4 @@ if __name__ == "__main__":
 #   calculate_bob()
 
 
-mycursor.close()
 db.close()
