@@ -3,8 +3,15 @@
     h1 {
       text-align: center;
     }
+
+    #calculateBtn {
+      align-self: center;
+    }
   </style>
-  {{ bootstrap.load_css() }}
+  <link
+    href="{{url_for('static', filename = 'css/bootstrap.min.css')}}"
+    rel="stylesheet"
+  />
 </head>
 
 {% block body %}
@@ -18,13 +25,18 @@
         Vehicle List
         <button
           type="button"
-          class="btn btn-success pull-right"
+          class="btn btn-success"
           data-toggle="modal"
           data-target="#myModal"
         >
           Add Vehicle
         </button>
       </h2>
+      <form id="calculateBtn" action="/calculate/" , method="POST">
+        <button name="calculateBtn" class="btn btn-primary" type="submit">
+          Calculate Values
+        </button>
+      </form>
 
       {%with messages = get_flashed_messages()%} {%if messages%} {% for message
       in messages %}
@@ -58,26 +70,26 @@
         </tr>
         {% for col in records %}
         <tr>
-          <td>{{col[0]}}</td>
-          <td>{{col[1]}}</td>
-          <td>{{col[2]}}</td>
-          <td>{{col[3]}}</td>
-          <td>{{col[4]}}</td>
-          <td>{{col[5]}}</td>
-          <td>{{col[6]}}</td>
-          <td>{{col[7]}}</td>
-          <td>{{col[8]}}</td>
-          <td>{{col[9]}}</td>
+          <td>{{col.0}}</td>
+          <td>{{col.1}}</td>
+          <td>{{col.2}}</td>
+          <td>{{col.3}}</td>
+          <td>{{col.4}}</td>
+          <td>{{col.5}}</td>
+          <td>{{col.6}}</td>
+          <td>{{col.7}}</td>
+          <td>{{col.8}}</td>
+          <td>{{col.9}}</td>
           <td>
             <a
-              href="/update/{{col[0]}}"
+              href="/update/{{col.0}}"
               class="btn btn-warning btn-xs"
               data-toggle="modal"
-              data-target="#modaledit{{col[0]}}"
+              data-target="#modaledit{{col.0}}"
               >Edit</a
             >
             <a
-              href="/delete/{{col[0]}}"
+              href="/delete/{{col.0}}"
               class="btn btn-danger btn-xs"
               data-toggle="modal"
               onclick="return confirm('Confirm Delete Vehicle?')"
@@ -85,7 +97,7 @@
             >
           </td>
         </tr>
-        <div id="modaledit{{col[0]}}" class="modal fade" role="dialog">
+        <div id="modaledit{{col.0}}" class="modal fade" role="dialog">
           <div class="modal-dailog">
             <div class="modal-content">
               <div class="modal-header">
@@ -98,32 +110,32 @@
                 <form action="{{ url_for('update') }}" method="POST">
                   <div class="form-group">
                     <label>Auction Price:</label>
-                    <input type="hidden" name="id" value="{{col[0]}}" />
+                    <input type="hidden" name="id" value="{{col.0}}" />
                     <input
                       type="text"
                       class="form-control"
                       name="auction_price"
-                      value="{{col[2]}}"
+                      value="{{col.2}}"
                     />
                   </div>
                   <div class="form-group">
                     <label>Province:</label>
-                    <input type="hidden" name="id" value="{{col[0]}}" />
+                    <input type="hidden" name="id" value="{{col.0}}" />
                     <input
                       type="text"
                       class="form-control"
                       name="province"
-                      value="{{col[3]}}"
+                      value="{{col.3}}"
                     />
                   </div>
                   <div class="form-group">
                     <label>Canadian Book</label>
-                    <input type="hidden" name="id" value="{{col[0]}}" />
+                    <input type="hidden" name="id" value="{{col.0}}" />
                     <input
                       type="text"
                       class="form-control"
                       name="book_cad"
-                      value="{{col[4]}}"
+                      value="{{col.4}}"
                     />
                   </div>
                   <div class="form-group">
@@ -208,3 +220,18 @@
 </div>
 
 {% endblock %}
+
+<!-- <script
+  type="text/javascript"
+  src="{{url_for('static', filename='js/jquery-3.2.1.min.js') }}"
+></script> -->
+
+<script
+  type="text/javascript"
+  src="{{url_for('static', filename='umd/popper.min.js') }}"
+></script>
+
+<script
+  type="text/javascript"
+  src="{{url_for('static', filename = 'js/bootstrap.min.js')}}"
+></script>
