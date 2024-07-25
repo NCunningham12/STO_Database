@@ -3,10 +3,6 @@
     h1 {
       text-align: center;
     }
-
-    #calculateBtn {
-      align-self: center;
-    }
   </style>
   <link
     href="{{url_for('static', filename = 'css/bootstrap.min.css')}}"
@@ -25,18 +21,13 @@
         Vehicle List
         <button
           type="button"
-          class="btn btn-success"
-          data-toggle="modal"
-          data-target="#myModal"
+          class="btn btn-success pull-right"
+          data-bs-toggle="modal"
+          data-bs-target="#myModal"
         >
           Add Vehicle
         </button>
       </h2>
-      <form id="calculateBtn" action="/calculate/" , method="POST">
-        <button name="calculateBtn" class="btn btn-primary" type="submit">
-          Calculate Values
-        </button>
-      </form>
 
       {%with messages = get_flashed_messages()%} {%if messages%} {% for message
       in messages %}
@@ -45,7 +36,7 @@
         <button
           type="button"
           class="close"
-          data-dismiss="alert"
+          data-bs-dismiss="alert"
           aria-label="close"
         >
           <span aria-hidden="true">&times;</span>
@@ -84,24 +75,27 @@
             <a
               href="/update/{{col.0}}"
               class="btn btn-warning btn-xs"
-              data-toggle="modal"
-              data-target="#modaledit{{col.0}}"
+              data-bs-toggle="modal"
+              data-bs-target="#modaledit{{col.0}}"
               >Edit</a
             >
             <a
               href="/delete/{{col.0}}"
               class="btn btn-danger btn-xs"
-              data-toggle="modal"
+              data-bs-toggle="modal"
               onclick="return confirm('Confirm Delete Vehicle?')"
               >Delete</a
             >
           </td>
         </tr>
+
+        <!-- Edit Vehicle Modal -->
+
         <div id="modaledit{{col.0}}" class="modal fade" role="dialog">
           <div class="modal-dailog">
             <div class="modal-content">
               <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
+                <button type="button" class="close" data-bs-dismiss="modal">
                   &times;
                 </button>
                 <h4 class="modal-title">Update Vehicle Info</h4>
@@ -109,7 +103,7 @@
               <div class="modal-body">
                 <form action="{{ url_for('update') }}" method="POST">
                   <div class="form-group">
-                    <label>Auction Price:</label>
+                    <label>Auction Price</label>
                     <input type="hidden" name="id" value="{{col.0}}" />
                     <input
                       type="text"
@@ -119,8 +113,7 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label>Province:</label>
-                    <input type="hidden" name="id" value="{{col.0}}" />
+                    <label>Province</label>
                     <input
                       type="text"
                       class="form-control"
@@ -130,7 +123,6 @@
                   </div>
                   <div class="form-group">
                     <label>Canadian Book</label>
-                    <input type="hidden" name="id" value="{{col.0}}" />
                     <input
                       type="text"
                       class="form-control"
@@ -149,7 +141,7 @@
                 <button
                   type="button"
                   class="btn btn-default"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Close
                 </button>
@@ -157,64 +149,74 @@
             </div>
           </div>
         </div>
+
+        <!-- Add Vehicle Modal -->
+
+        <div id="myModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-bs-dismiss="modal">
+                  &times;
+                </button>
+                <h4 class="modal-title">Insert Vehicle Data</h4>
+              </div>
+              <div class="modal-body">
+                <form action="{{ url_for('insert') }}" method="POST">
+                  <div class="form-group">
+                    <label>Auction Price:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="auction_price"
+                      required="1"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Province:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="province"
+                      required="1"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Canadian Book:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="book_cad"
+                      required="1"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-primary" type="submit">
+                      Insert Vehicle Data
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-default"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {% endfor %}
       </table>
-    </div>
-  </div>
-</div>
-
-<!-- Modal -->
-
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">
-          &times;
+      <form id="calculateBtn" action="/calculate/" , method="POST">
+        <button name="calculateBtn" class="btn btn-primary" type="submit">
+          Calculate Values
         </button>
-        <h4 class="modal-title">Insert Vehicle Data</h4>
-      </div>
-      <div class="modal-body">
-        <form action="{{ url_for('insert') }}" method="POST">
-          <div class="form-group">
-            <label>Auction Price:</label>
-            <input
-              type="text"
-              class="form-control"
-              name="auction_price"
-              required="1"
-            />
-          </div>
-          <div class="form-group">
-            <label>Province:</label>
-            <input
-              type="text"
-              class="form-control"
-              name="province"
-              required="1"
-            />
-          </div>
-          <div class="form-group">
-            <label>Canadian Book:</label>
-            <input
-              type="text"
-              class="form-control"
-              name="book_cad"
-              required="1"
-            />
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary" type="submit">
-              Insert Vehicle Data
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
-          Close
-        </button>
-      </div>
+      </form>
     </div>
   </div>
 </div>

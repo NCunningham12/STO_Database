@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-# from flask_bootstrap import Bootstrap5
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -16,7 +15,6 @@ db = mysql.connector.connect(
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
-# bootstrap = Bootstrap5(app)
 
 
 
@@ -32,13 +30,13 @@ def Index():
 
 
 
-@app.route("/insert", methods = ['POST'])
+@app.route('/insert', methods = ['POST'])
 def insert():
-  if request.method == 'POST':
+  if request.method == "POST":
     flash("Vehicle Data Inserted Successfully")
-    auction_price = request.form['Auction Price']
-    province = request.form['Province']
-    book_cad = request.form['Canadian Book']
+    auction_price = request.form['auction_price']
+    province = request.form['province']
+    book_cad = request.form['book_cad']
     cursor = db.cursor()
     cursor.execute("INSERT INTO inventory (auction_price, province, book_cad) VALUES (%s, %s, %s)", (auction_price, province, book_cad))
     db.commit()
@@ -55,19 +53,23 @@ def delete(id_data):
   return redirect(url_for('Index'))
 
 
-@app.route('/update', methods=['POST', 'GET'])
+@app.route('/update/', methods=['POST'])
 def update():
   if request.method == 'POST':
     id_data = request.form['id']
-    auction_price = request.form['Auction Price']
-    province = request.form['Province']
-    book_cad = request.form['Canadian Book']
+    auction_price = request.form['auction_price']
+    province = request.form['province']
+    book_cad = request.form['book_cad']
     cursor = db.cursor()
     cursor.execute("""UPDATE inventory SET auction_price=%s, province=%s, book_cad=%s WHERE id=%s""", (auction_price, province, book_cad, id_data))
     flash("Vehicle Data Updated Successfully")
     db.commit()
     return redirect(url_for('Index'))
   
+# @app.route('/update/<id_data>', methods=['GET'])
+# def update_modal(id_data):
+#   flash('Success! Id: ' + str(id_data))
+#   return redirect(url_for('Index'))
 
 @app.route('/calculate/', methods=['POST'])
 def calculate_bob():
